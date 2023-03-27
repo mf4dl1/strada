@@ -1,1 +1,3 @@
-# strada
+# Strada
+
+Strada is a platform for Climate Change Vulnerability Profiles and Local Adaptation Strategies in Indonesia. This platform is useful for anyone who wants to find adaptation strategies at the village (local) level based on the national climate change vulnerability profile at the village level. The vulnerability analysis combines publicly available spatial data, village-level data, and statistical and machine learning techniques to group villages into 61 clusters with similar characteristics. The profiles are complemented by taking stock of village-level climate adaptation strategies that can inform future interventions to address identified vulnerabilities. The purpose of the note is to promote a data-driven approach to understanding climate vulnerabilities and local adaptation strategies, with a view to informing targeted community-led interventions for long-term resilience in Indonesia.
