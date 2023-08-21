@@ -1,0 +1,142 @@
+@font-face {
+  font-family: 'andes';
+  src: url('../font/AndesRegular.otf') format('opentype');
+}
+@font-face {
+  font-family: 'andes-bold';
+  src: url('../font/AndesBold.otf') format('opentype');
+}
+h1,h2,h3,h4 {
+    font-family:'andes-bold';
+    color:#279be6;
+    padding-bottom:0;
+    margin-bottom:5px;
+}
+
+.left-align {
+  text-align: left;
+}
+
+.right-align {
+  text-align: right;
+}
+
+/*Tables*/
+.blue {
+  width: 100%;
+  margin: 0;
+}
+
+.blue th {
+  background-color: #306DA9;
+  color: white;
+}
+
+.blue td {
+  height: 30px;
+}
+
+.blue tr:nth-child(even) {
+  background-color: white;
+}
+
+.blue tr:nth-child(odd) {
+  background-color: #DFECF2;
+}
+
+.table_data {
+  border-collapse: collapse;
+  width: 100%;
+}
+
+.table_data td, .table_data th {
+  border: 1px solid #FFFFFF;
+  padding: 8px;
+  width:auto;
+}
+
+.table_data th {
+  background-color: #2799E5;
+  color: white;
+  width:auto;
+}
+
+.table_data tr:nth-child(even) {
+  background-color: #D9E9F0;
+}
+
+.table_data tr:nth-child(odd) {
+  background-color: #F6F6F6;
+}
+
+/*Button*/
+
+.button, a.button {
+  background-color:#306DA9;
+  border: none;
+  color: white;
+  padding: 3px;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  margin: 0;
+  cursor: pointer;
+  border-radius: 3px;
+  box-shadow: 1px 1px 2px rgba(0, 0, 0, 0.4);
+  transition: all 0.3s ease-in-out;
+}
+
+.button:hover, a.button:hover {
+  background-color: #7da7ce;
+  box-shadow: 1px 1px 2px rgba(0, 0, 0, 0.6);
+  transform: translate(-2px, -2px);
+}
+
+
+/* image slider */
+/*
+
+        .text {
+          color: #f2f2f2;
+          font-size: 15px;
+          padding: 8px 12px;
+          position: absolute;
+          bottom: 8px;
+          width: 100%;
+          text-align: center;
+        }
+        
+        .numbertext {
+          color: #f2f2f2;
+          font-size: 12px;
+          padding: 8px 12px;
+          position: absolute;
+          top: 0;
+        }
+        
+        .dot {
+          cursor: pointer;
+          height: 15px;
+          width: 15px;
+          margin: 0 2px;
+          background-color: #bbb;
+          border-radius: 50%;
+          display: inline-block;
+          transition: background-color 0.6s ease;
+        }
+        
+        .active, .dot:hover {
+          background-color: #717171;
+        }
+        
+        .fade {
+          animation-name: fade;
+          animation-duration: 1.5s;
+        }
+        
+        @keyframes fade {
+          from {opacity: .4}
+          to {opacity: 1}
+        }
+        
+*/
