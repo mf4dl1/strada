@@ -1,724 +1,472 @@
-<html>
-<head><meta charset="us-ascii">
+<!-- index.php -->
 
-	<title>Strategi Adaptasi</title>
-    <meta charset="us-ascii">
-    <meta content="Strategi Adaptasi" name="description" />
-	<meta content="adaptasi, strategi adaptasi, adaptasi perubahan iklim, iklim, perubahan iklim" name="keywords" />
-	<meta content="Mohammad Fadli" name="author" />
-	<link rel="icon" type="image/x-icon" href="img/favicon.ico">
- <link rel="stylesheet" href="https://unpkg.com/leaflet@1.6.0/dist/leaflet.css"
-   integrity="sha512-xwE/Az9zrjBIphAcBb3F6JVqxf46+CDLwfLMHloNu6KEQCAWi6HcDUbeOfBIptF7tcCzusKFjFw2yuvEpDL9wQ=="
-   crossorigin=""/>
-   
- <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/uikit/2.22.0/css/uikit.almost-flat.min.css"/>
-   
-<script src="https://unpkg.com/leaflet@1.6.0/dist/leaflet.js"
-   integrity="sha512-gZwIG9x3wUXg2hdXF6+rVkLF/0Vi9U8D2Ntg4Ga5I5BZpVkVxlJWbSQtXPSiUTtC0TjtGOmxa1AJPuV0CPthew=="
-   crossorigin=""></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/uikit/2.22.0/js/uikit.min.js"></script>
-<style>
-body {background-color:#FFee00;padding:0;margin:0;}
+<?php
+    include "library.php";
+    $clusterSumatra = getClusterDesc(6);
+    $clusterJava = getClusterDesc(2);
+    $clusterBaliNT = getClusterDesc(1);
+    $clusterKalimantan = getClusterDesc(3);
+    $clusterSulawesi = getClusterDesc(5);
+    $clusterPapuaMaluku = getClusterDesc(4);
 
-html, body, #mapid {
-    height: 100%;
-    width: 100vw;
-    padding:0;margin:0;
-}
+?>
 
-@font-face {
-  font-family: 'andes';
-  src: url('font/AndesRegular.otf') format('opentype');
-}
-@font-face {
-  font-family: 'andes-bold';
-  src: url('font/AndesBold.otf') format('opentype');
-}
 
-h1,h2,h3 {
-    font-family:'andes-bold';
-    color:#279be6;
-    padding-bottom:0;
-}
-
-.leaflet-popup-content-wrapper {
-    background-color:#F4F8FB;
-}
-.leaflet-popup-content {
-    min-width:0;
-}
-
-.button, a.button {
-  background-color:#306DA9;
-  border: none;
-  color: white;
-  padding: 3px;
-  text-align: center;
-  text-decoration: none;
-  display: inline-block;
-  margin: 0;
-  cursor: pointer;
-  border-radius: 3px;
-  box-shadow: 1px 1px 2px rgba(0, 0, 0, 0.4);
-  transition: all 0.3s ease-in-out;
-}
-
-.button:hover, a.button:hover {
-  background-color: #7da7ce;
-  box-shadow: 1px 1px 2px rgba(0, 0, 0, 0.6);
-  transform: translate(-2px, -2px);
-}
-
-.see-profiles {
-  font-size:1.2em;
-  top: 5%;
-  right: 4%;
-  padding: 5px;
-  left:10px;
-  display: block;
-  font-family:'andes-bold';
-}
-
-#locate-position{
-  position:absolute;
-  bottom: 6vh; right:10px;
-  -webkit-box-shadow: 0px 0px 5px 0px rgba(0,0,0,0.75);
-  -moz-box-shadow: 0px 0px 5px 0px rgba(0,0,0,0.75);
-  box-shadow: 0px 0px 5px 0px rgba(0,0,0,0.75);
-  float:none;
-  z-index: 5000;
-}
-
-.flybutton {
-  position:absolute;
-  -webkit-box-shadow: 0px 0px 5px 0px rgba(0,0,0,0.75);
-  -moz-box-shadow: 0px 0px 5px 0px rgba(0,0,0,0.75);
-  box-shadow: 0px 0px 5px 0px rgba(0,0,0,0.75);
-  float:none;
-  z-index: 5000;
-}
-
-#fly2dd {
-  bottom: 6vh; right:60px; 
-  position:absolute;
-  -webkit-box-shadow: 0px 0px 5px 0px rgba(0,0,0,0.75);
-  -moz-box-shadow: 0px 0px 5px 0px rgba(0,0,0,0.75);
-  box-shadow: 0px 0px 5px 0px rgba(0,0,0,0.75);
-  float:none;
-  z-index: 5000;
-  padding:5px;
-}
-
-#fly2village {
-  bottom: 6vh; right:200px; 
-  position:absolute;
-  -webkit-box-shadow: 0px 0px 5px 0px rgba(0,0,0,0.75);
-  -moz-box-shadow: 0px 0px 5px 0px rgba(0,0,0,0.75);
-  box-shadow: 0px 0px 5px 0px rgba(0,0,0,0.75);
-  float:none;
-  z-index: 5000;
-  padding:5px;
-}
-
-.district_title {
-  width: 100%;
-  border-collapse: collapse;
-}
-.district_title tr {
-    border: none;
-}
-.district_title td {
-    padding: 0;
-}
-.left-align {
-  text-align: left;
-}
-
-.right-align {
-  text-align: right;
-}
-
-.overlay {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background:none;
-  display: none;
-  align-items: center;
-  justify-content: center;
-  z-index: 9999;
-}
-
-/* Styling for the close button */
-.overlay .close-btn {
-  position: absolute;
-  top: 5%;
-  right: 4%;
-  padding: 5px;
-  width: 20px;
-  height: 20px;
-  border-radius: 3px;
-  color: #fff;
-  text-align:center;
-  background-color:#f00;
-  font-size: 18px;
-  cursor: pointer;
-}
-
-/* Styling for the iframe */
-.overlay iframe {
-  width: 95%;
-  height: 95%;
-    background-color: rgba(0, 0, 0, 0.7);
-}
-
-</style>
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-
-  <script src="js/leaflet-providers.js"></script>
-  <script src="js/leaflet.ajax.min.js"></script>
-
-</head>
-<body>
-<a href="http://geo.co.id/strada">
-<img src="img/strada.png" 
-style="
-  height:40px; float:none;  position: absolute;
-  top: 10px; left:8vh; z-index: 5000; text-align: center
-  " /></a>
-
-<img src="img/supporter.png" style="
-  height:40px; float:none;  position: absolute;
-  bottom: 10px; left:1vh; z-index: 5000; text-align: center
-  " /></a>
-
-<div id="zoom-level" style="
-  float:none;  position: absolute;
-  top: 60px; left:10vh; z-index: 5000; text-align: center
-  "></div>
-
-<div id="mapid"></div>
-
-  <div class="overlay" id="overlay">
-    <span class="close-btn" id="closeButton" >&times;</span>
-    <iframe id="iframe" src="#"></iframe>
-  </div>
-
-<button id="locate-position" class="uk-button uk-button-success"><i class="uk-icon-map-marker"></i></button>
-
-<script>
-	
-	const overlay = document.getElementById('overlay');
-	const closeButton = document.getElementById('closeButton');
-	
-    function showOverlay(overlaycontent) {
-      overlay.style.display = 'flex';
-      iframe.src = overlaycontent;
-    }
-    
-    function hideOverlay() {
-      overlay.style.display = 'none';
-    }
-    
-    closeButton.addEventListener('click', hideOverlay);
-	
-    const customOptions = {
-     'maxWidth': 'auto', // set max-width
-     'className': 'customPopup' // name custom popup
-    }
-    
-    function toTitleCase(str) {
-      return str.replace(
-        /\w\S*/g,
-        function(txt) {
-          return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+        <meta name="description" content="Strategi Adaptasi" />
+        <meta name="author" content="Mohammad Fadli" />
+        <title>Strategi Adaptasi</title>
+        <!-- Favicon-->
+        <link rel="icon" type="image/x-icon" href="img/favicon.ico" />
+        <!-- Font Awesome icons (free version)-->
+        <script src="https://use.fontawesome.com/releases/v6.3.0/js/all.js" crossorigin="anonymous"></script>
+        <!-- Google fonts-->
+        <link href="https://fonts.googleapis.com/css?family=Montserrat:400,700" rel="stylesheet" type="text/css" />
+        <link href="https://fonts.googleapis.com/css?family=Roboto+Slab:400,100,300,700" rel="stylesheet" type="text/css" />
+        <!-- Core theme CSS (includes Bootstrap)-->
+        <link href="css/styles.css" rel="stylesheet" />
+		<style>
+		#mainNav.navbar-shrink {
+			padding-top: 1rem;
+			padding-bottom: 1rem;
+			background-color: #D9E9F0;
+		}
+		#mainNav .navbar-brand img {
+			height: 4rem;
+		}
+		#mainNav.navbar-shrink .navbar-brand svg, #mainNav.navbar-shrink .navbar-brand img {
+			height: 3rem;
+		}
+		#mainNav .navbar-nav .nav-item .nav-link.active, #mainNav .navbar-nav .nav-item .nav-link:hover {
+		  color: #316DA9;
+		  background-color: #90AFC6;
+		}
+		.nav-link {
+			/*background-color: #055F3B;*/
+		}
+		.btn-primary {
+		--bs-btn-color: #fff;
+		--bs-btn-bg: #316DA9;
+		--bs-btn-border-color: #055F3B;
+		--bs-btn-hover-color: #fff;
+		--bs-btn-hover-bg: #2799E5;
+		--bs-btn-hover-border-color: #064c30	;
+		--bs-btn-focus-shadow-rgb: 255, 208, 38;
+		--bs-btn-active-color: #fff;
+		--bs-btn-active-bg: #064c30;
+		--bs-btn-active-border-color: #064c30;
+		--bs-btn-active-shadow: inset 0 3px 5px rgba(0, 0, 0, 0.125);
+		--bs-btn-disabled-color: #fff;
+		--bs-btn-disabled-bg: #055F3B;
+		--bs-btn-disabled-border-color: #055F3B;
+		}
+		.page-section {
+			background-color: #E2ECEE;
+		}
+		#mainNav .navbar-nav .nav-item .nav-link {
+			background-color: #316DA9;
+		}
+        header.masthead {
+            padding-top: 10rem;
+            padding-bottom: 12.5rem;
         }
-      );
-    }
-
-    function clearLayers() {
-    mymap.eachLayer(function (layer) {
-          if (layer !== streets && layer !== grayscale) { // don't remove the base layer
-            mymap.removeLayer(layer);
+        header.masthead .masthead-heading {
+            font-size: 2.5rem;
+            font-weight: 700;
+            line-height: 4.5rem;
+            margin-bottom: 0rem;
+        }
+        header.masthead .masthead-subheading {
+            font-size: 1.25rem;
+            font-style: italic;
+            line-height: 1.55rem;
+            margin-bottom: 2rem;
+        }
+        header.masthead {
+            text-align:left;
+            
+        }
+          table.two-column {
+            width: 100%;
+            border-collapse: collapse;
           }
-        });  
-    };
-
-    function applyStyleByGroup(l, group) {
-      var defStyle;
-      if (group == "Java 1")  {
-            var defStyle = { "fillColor": "#006100" };
-            l.setStyle(defStyle);
-       } else if (group == "Java 2")  {
-            var defStyle = { "fillColor": "#2d7500" };
-            l.setStyle(defStyle);
-       } else if (group == "Java 3")  {
-            var defStyle = { "fillColor": "#4d8c00" };
-            l.setStyle(defStyle);
-       } else if (group == "Java 4")  {
-            var defStyle = { "fillColor": "#70a300" };
-            l.setStyle(defStyle);
-       } else if (group == "Java 5")  {
-            var defStyle = { "fillColor": "#97bd00" };
-            l.setStyle(defStyle);
-       } else if (group == "Java 6")  {
-            var defStyle = { "fillColor": "#bdd600" };
-            l.setStyle(defStyle);
-       } else if (group == "Java 7")  {
-            var defStyle = { "fillColor": "#e8f000" };
-            l.setStyle(defStyle);
-       } else if (group == "Java 8")  {
-            var defStyle = { "fillColor": "#fff200" };
-            l.setStyle(defStyle);
-       } else if (group == "Java 9")  {
-            var defStyle = { "fillColor": "#ffd000" };
-            l.setStyle(defStyle);
-       } else if (group == "Java 10")  {
-            var defStyle = { "fillColor": "#ffb300" };
-            l.setStyle(defStyle);
-       } else if (group == "Java 11")  {
-            var defStyle = { "fillColor": "#ff9100" };
-            l.setStyle(defStyle);
-       } else if (group == "Java 12")  {
-            var defStyle = { "fillColor": "#ff7300" };
-            l.setStyle(defStyle);
-       } else if (group == "Java 13")  {
-            var defStyle = { "fillColor": "#ff5100" };
-            l.setStyle(defStyle);
-       } else if (group == "Java 14")  {
-            var defStyle = { "fillColor": "#ff2600" };
-            l.setStyle(defStyle);
-       } else if (group == "Sulawesi 1")  {
-            var defStyle = { "fillColor": "#006100" };
-            l.setStyle(defStyle);
-       } else if (group == "Sulawesi 2")  {
-            var defStyle = { "fillColor": "#619900" };
-            l.setStyle(defStyle);
-       } else if (group == "Sulawesi 3")  {
-            var defStyle = { "fillColor": "#c5db00" };
-            l.setStyle(defStyle);
-       } else if (group == "Sulawesi 4")  {
-            var defStyle = { "fillColor": "#ffd900" };
-            l.setStyle(defStyle);
-       } else if (group == "Sulawesi 5")  {
-            var defStyle = { "fillColor": "#ff8400" };
-            l.setStyle(defStyle);
-       } else if (group == "Sulawesi 6")  {
-            var defStyle = { "fillColor": "#ff2600" };
-            l.setStyle(defStyle);
-       } else if (group == "Papua/Maluku 1")  {
-            var defStyle = { "fillColor": "#006100" };
-            l.setStyle(defStyle);
-       } else if (group == "Papua/Maluku 2")  {
-            var defStyle = { "fillColor": "#337A00" };
-            l.setStyle(defStyle);
-       } else if (group == "Papua/Maluku 3")  {
-            var defStyle = { "fillColor": "#5A9600" };
-            l.setStyle(defStyle);
-       } else if (group == "Papua/Maluku 4")  {
-            var defStyle = { "fillColor": "#86B300" };
-            l.setStyle(defStyle);
-       } else if (group == "Papua/Maluku 5")  {
-            var defStyle = { "fillColor": "#B3CF00" };
-            l.setStyle(defStyle);
-       } else if (group == "Papua/Maluku 5")  {
-            var defStyle = { "fillColor": "#B3CF00" };
-            l.setStyle(defStyle);
-       } else if (group == "Papua/Maluku 6")  {
-            var defStyle = { "fillColor": "#e4f000" };
-            l.setStyle(defStyle);
-       } else if (group == "Papua/Maluku 7")  {
-            var defStyle = { "fillColor": "#ffee00" };
-            l.setStyle(defStyle);
-       } else if (group == "Papua/Maluku 8")  {
-            var defStyle = { "fillColor": "#ffc800" };
-            l.setStyle(defStyle);
-       } else if (group == "Papua/Maluku 9")  {
-            var defStyle = { "fillColor": "#ffa200" };
-            l.setStyle(defStyle);
-       } else if (group == "Papua/Maluku 10")  {
-            var defStyle = { "fillColor": "#ff8000" };
-            l.setStyle(defStyle);
-       } else if (group == "Papua/Maluku 11")  {
-            var defStyle = { "fillColor": "#ff5500" };
-            l.setStyle(defStyle);
-       } else if (group == "Papua/Maluku 12")  {
-            var defStyle = { "fillColor": "#ff2200" };
-            l.setStyle(defStyle);
-       } else if (group == "Sumatra 1")  {
-            var defStyle = { "fillColor": "#498A00" };
-            l.setStyle(defStyle);
-       } else if (group == "Sumatra 2")  {
-            var defStyle = { "fillColor": "#2B7500" };
-            l.setStyle(defStyle);
-       } else if (group == "Sumatra 3")  {
-            var defStyle = { "fillColor": "#8BB500" };
-            l.setStyle(defStyle);
-       } else if (group == "Sumatra 4")  {
-            var defStyle = { "fillColor": "#B0CF00" };
-            l.setStyle(defStyle);
-       } else if (group == "Sumatra 5")  {
-            var defStyle = { "fillColor": "#D6E600" };
-            l.setStyle(defStyle);
-       } else if (group == "Sumatra 6")  {
-            var defStyle = { "fillColor": "#B0CF00" };
-            l.setStyle(defStyle);
-       } else if (group == "Sumatra 7")  {
-            var defStyle = { "fillColor": "#D6E600" };
-            l.setStyle(defStyle);
-       } else if (group == "Sumatra 8")  {
-            var defStyle = { "fillColor": "#ffff00" };
-            l.setStyle(defStyle);
-       } else if (group == "Sumatra 9")  {
-            var defStyle = { "fillColor": "#ffe600" };
-            l.setStyle(defStyle);
-       } else if (group == "Sumatra 10")  {
-            var defStyle = { "fillColor": "#ffc800" };
-            l.setStyle(defStyle);
-       } else if (group == "Sumatra 11")  {
-            var defStyle = { "fillColor": "#ffa600" };
-            l.setStyle(defStyle);
-       } else if (group == "Sumatra 12")  {
-            var defStyle = { "fillColor": "#ff8c00" };
-            l.setStyle(defStyle);
-       } else if (group == "Sumatra 13")  {
-            var defStyle = { "fillColor": "#ff6f00" };
-            l.setStyle(defStyle);
-       } else if (group == "Sumatra 14")  {
-            var defStyle = { "fillColor": "#ff4d00" };
-            l.setStyle(defStyle);
-       } else if (group == "Sumatra 15")  {
-            var defStyle = { "fillColor": "#ff2600" };
-            l.setStyle(defStyle);
-       } else if (group == "Bali/NT 1")  {
-            var defStyle = { "fillColor": "#006100" };
-            l.setStyle(defStyle);
-       } else if (group == "Bali/NT 2")  {
-            var defStyle = { "fillColor": "#619900" };
-            l.setStyle(defStyle);
-       } else if (group == "Bali/NT 3")  {
-            var defStyle = { "fillColor": "#C5DB00" };
-            l.setStyle(defStyle);
-       } else if (group == "Bali/NT 4")  {
-            var defStyle = { "fillColor": "#70A300" };
-            l.setStyle(defStyle);
-       } else if (group == "Bali/NT 5")  {
-            var defStyle = { "fillColor": "#97BD00" };
-            l.setStyle(defStyle);
-       } else if (group == "Bali/NT 6")  {
-            var defStyle = { "fillColor": "#BDD600" };
-            l.setStyle(defStyle);
-       } else if (group == "Kalimantan 1")  {
-            var defStyle = { "fillColor": "#006100" };
-            l.setStyle(defStyle);
-       } else if (group == "Kalimantan 2")  {
-            var defStyle = { "fillColor": "#498a00" };
-            l.setStyle(defStyle);
-       } else if (group == "Kalimantan 3")  {
-            var defStyle = { "fillColor": "#8bb500" };
-            l.setStyle(defStyle);
-       } else if (group == "Kalimantan 4")  {
-            var defStyle = { "fillColor": "#d6e600" };
-            l.setStyle(defStyle);
-       } else if (group == "Kalimantan 5")  {
-            var defStyle = { "fillColor": "#ffe600" };
-            l.setStyle(defStyle);
-       } else if (group == "Kalimantan 6")  {
-            var defStyle = { "fillColor": "#ffa600" };
-            l.setStyle(defStyle);
-       } else if (group == "Kalimantan 7")  {
-            var defStyle = { "fillColor": "#ff6f00" };
-            l.setStyle(defStyle);
-       } else if (group == "Kalimantan 8")  {
-            var defStyle = { "fillColor": "#ff2200" };
-            l.setStyle(defStyle);
-       };
-       l.setStyle(defStyle);
-    };
-    
-    function flyToFeature(feature, map) {
-      // Get the layer bounds from the feature's geometry
-      var layerBounds = L.geoJSON(feature).getBounds();
-    
-      // Calculate the center of the layer bounds
-      var center = layerBounds.getCenter();
-    
-      // Get the maximum and minimum coordinates of the layer bounds
-      var north = layerBounds.getNorth();
-      var south = layerBounds.getSouth();
-      var east = layerBounds.getEast();
-      var west = layerBounds.getWest();
-    
-      // Calculate the extent of the layer bounds
-      var extent = [[south, west], [north, east]];
-    
-      // Calculate the maximum zoom level to fit the extent
-      var maxZoom = map.getBoundsZoom(extent);
-    
-      // Fly to the center of the layer with the maximum zoom level
-      map.flyTo(center, maxZoom);
-    }
-    
-    
- /*District Layer*/
- 
-    function showCluster(districtname,map) {
-    
-    var district = new L.GeoJSON.AJAX("data/"+districtname+".geojson",{
-        
-        onEachFeature: function (f, l) {
-            var strIDDESA = f.properties.IDDESA.toString();
-            /*
-            l.bindPopup('<b style="color:#279be6;font-size: 1.4em;font-family:\'andes-bold\'">Desa '+toTitleCase(f.properties.DESA)+' ('+strIDDESA+')</b><iframe src="page.php?id='+strIDDESA+'&cluster='+f.properties.pca_srclus+'" width="280" height="350" style="border:none;"></iframe>',customOptions);
-            */
-            l.on('click', function(e) {
-               var url = 'page.php?id='+strIDDESA+'&cluster='+f.properties.pca_srclus;
-               showOverlay(url);
-            });
-        
-            var defStyle = {
-                "color": "#000000",
-                "fillColor": "#000000",
-                "fillOpacity":0.5,
-                "weight": 2,
-                "opacity": 1,
-                "weight": 0.5
-
-            };
-            l.setStyle(defStyle);
-            
-            var group = f.properties.pca_srclus;
-            applyStyleByGroup(l, group);
- 
-            }
-        });
-    clearLayers();
-    
-   // $.getJSON("data/"+districtname+".geojson", function(data) {
-    //    district.addData(data);
-        district.addTo(map);
-        /*
-        var layerBounds = district.getBounds();
-        var center = layerBounds.getCenter();
-        var north = layerBounds.getNorth();
-        var south = layerBounds.getSouth();
-        var east = layerBounds.getEast();
-        var west = layerBounds.getWest();
-        var extent = [[south, west], [north, east]];
-        var maxZoom = map.getBoundsZoom(extent);
-        map.flyTo(center, maxZoom);
-        */
-    //    });
-    
-    map.setMaxZoom(20);
-    }
-    
- /*National Layer*/
- 
-    var clusters = new L.GeoJSON.AJAX("data/clusters.geojson",{
-
-        onEachFeature: function (f, l) {
-            
-            l.bindPopup('<b style="color:#055F3B;font-size:1.4em;font-family: \'andes-bold\';">Cluster '+toTitleCase(f.properties.pca_srclus)+'</b><iframe src="page_national.php?cluster='+f.properties.pca_srclus+'" width="100%" height="350" style="border:none;"></iframe>',customOptions);
-        
-            var defStyle = {
-                "fillColor": "#000000",
-                "fillOpacity":0.5,
-                "weight": 2,
-                "opacity": 1,
-                "weight": 0
-            };
-            l.setStyle(defStyle);
-            
-            var group = f.properties.pca_srclus;
-            applyStyleByGroup(l, group);
-        }
-    });
-
-    /*Province Boundary*/
-    var provinceBoundary = new L.GeoJSON.AJAX("data/provinceBoundary.geojson",{
-        onEachFeature: function (f, l) {
-            /*
-            l.bindPopup('<iframe src="page_province.php?id_province='+f.properties.PROVNO+'" width="280" height="350" style="border:none;"></iframe>',customOptions);
-            */
-            l.on('click', function(e) {
-               var url = 'page_province.php?id_province='+f.properties.PROVNO;
-               showOverlay(url);
-            });
-    
-            var defStyle = {
-                    "color": "#000000",
-                    "weight": 0.6,
-                    "opacity": 1,
-                    "fillOpacity":0
-            };
-            l.setStyle(defStyle);
-        }
-    }),
-    
-    /*District Boundary*/
-    districtBoundary = new L.GeoJSON.AJAX("data/districtBoundary.geojson",{
-        onEachFeature: function (f, l) {
-            
-            /*
-            l.bindPopup('<table class="district_title"><tr class="district_title"><td class="district_title left-align"><h2>'+toTitleCase(f.properties.KABKOT)+'</h2></td></tr><tr><td class="district_titile right-align"><a href="#" onclick="showCluster(\''+f.properties.KABKOT+'\',mymap);" class="button" style="font-size: 0.8em;">See Village Profiles</a> <a href="#" onclick="showOverlay(\'page_district.php?district='+f.properties.KABKOT+'\');" class="button" style="font-size: 0.8em;">See District Profiles</a></td></tr></table><BR></<iframe src="page_district.php?district='+f.properties.KABKOT+'" width="280" height="350" style="border:none;"></iframe>');
-            */
-            
-            l.bindPopup('<h2>'+toTitleCase(f.properties.KABKOT)+'</h2><a href="#" onclick="showOverlay(\'page_district.php?district='+f.properties.KABKOT+'\');" class="button see-profiles">District Profiles</a> <a href="#" onclick="showCluster(\''+f.properties.KABKOT+'\',mymap);" class="button see-profiles">Village Profiles</a><iframe src="page_district_short.php?district='+f.properties.KABKOT+'" width="301" height="350" style="border:none;"></iframe>');
-            
-            
-            var defStyle = {
-                    "color": "#000000",
-                    "weight": 0.4,
-                    "opacity": 1,
-                    "fillOpacity":0
-            };
-            l.setStyle(defStyle);
-        }
-    });
-    
-    var subdistrictBoundary = new L.GeoJSON.AJAX("data/subdistrictBoundary.geojson",{
-        onEachFeature: function (f, l) {
-            var defStyle = {
-                    "color": "#000000",
-                    "weight": 0.2,
-                    "opacity": 1,
-                    "fillOpacity":0
-            };
-            l.setStyle(defStyle);
-        }
-    });
-
-    /*Base Map*/	
-	var 
-	mbAttr = 'Map data &copy; <a href="https://www.openstreetmap.org/">OpenStreetMap</a> contributors, ' +
-		'<a href="https://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a> Peta Pesepeda v1.0, ' +
-		'Imagery © <a href="https://www.mapbox.com/">Mapbox</a>',
-	mbUrl = 'https://api.mapbox.com/styles/v1/{id}/tiles/{z}/{x}/{y}?access_token=pk.eyJ1IjoiZmFkbGlnZW8iLCJhIjoiY2xnN2RiZ2FsMDVmYzN1bWNwZ3ZtZ3owNCJ9.z4THQRUYi13b73yehavwTg';
-
-	var grayscale   = L.tileLayer(mbUrl, {id: 'mapbox/light-v9', tileSize: 512, zoomOffset: -1, attribution: mbAttr}),
-		streets  = L.tileLayer(mbUrl, {id: 'mapbox/streets-v11', tileSize: 512, zoomOffset: -1, attribution: mbAttr});
-	
-	var baseLayers = {
-		"Grayscale": grayscale,
-		"Streets": streets
-	};
-	
-	var clusterLayers  = {
-      "Cluster": clusters
-	};
-	
-	var boundaryLayers  = {
-      "Province Boundary": provinceBoundary,
-      "District Boundary": districtBoundary
-	};
-	
-
-	/*Define My Map*/	
-	var mymap = L.map('mapid', {
-		center: [-0.7893, 117.957546],
-		zoom: 5,
-		minZoom: 5,
-		maxZoom: 10,
-		layers: [streets, provinceBoundary],
-		zoomSnap: 1
-	});
-
-	/*List Layers*/
-	L.control.layers(baseLayers, clusterLayers).addTo(mymap);
-	L.control.layers(boundaryLayers).addTo(mymap);
-    
-    /*Initiate initial layers
-    clusterLayers.addTo(mymap);
-    provinceBoundary.addTo(mymap);*/
-
-    
-    /*zoom change*/
-      //On zoomend event handler
-      mymap.on("zoomend", function (event) {
-        if (mymap.getZoom() > 5 && mymap.getZoom() < 8 ) {
-          clearLayers();
-          clusters.addTo(mymap);
-          provinceBoundary.addTo(mymap);
-        } else if (mymap.getZoom() >= 8 && mymap.getZoom() < 9) {
-          clearLayers();
-          clusters.addTo(mymap);
-          districtBoundary.addTo(mymap);
-        }
-      });
-        
-    $('#locate-position').on('click', function(){
-      mymap.locate({setView: true, maxZoom: 14});
-    });
-    
-    var zoomLevelElement = document.getElementById('zoom-level');
-    
-    mymap.on('zoomend', function() {
-      var zoomLevel = mymap.getZoom();
-      zoomLevelElement.textContent = 'Zoom Level: ' + zoomLevel;
-    });
-    
-    function flyto() {
-        mymap.eachLayer(function (layer) {
-          if (layer !== streets && layer !== grayscale) { // don't remove the base layer
-            mymap.removeLayer(layer);
+          
+          table.two-column td {
+            width: 50%;
+            padding: 10px;
           }
-        });
-        if (document.getElementById("fly2dd").value == 1){
-            mymap.flyTo([-1.34383549, 119.95691824], 9);
-            showCluster('SIGI').addTo(mymap);
-        }     
-        else if (document.getElementById("fly2dd").value == 2){
-            showCluster('MALANG').addTo(mymap);
-            mymap.flyTo([-8.08276208, 112.63395661], 10);
-        }
-        else if (document.getElementById("fly2dd").value == 3){
-            mymap.flyTo([-7.5178517439958, 112.48096292882529], 10.7);
-            showCluster('MOJOKERTO').addTo(mymap);
-        }
-        else if (document.getElementById("fly2dd").value == 4){
-            mymap.flyTo([-4.242698916532362, 122.42544633610287], 10);
-            showCluster('KONAWE SELATAN').addTo(mymap);
-        }
-        else if (document.getElementById("fly2dd").value == 5){
-            mymap.flyTo([-3.6731774782356754, 128.1727310457602], 11);
-            showCluster('AMBON').addTo(mymap);
-        }
-        else if (document.getElementById("fly2dd").value == 6){
-            mymap.flyTo([4.507450, 96.825448], 10);
-            showCluster('ACEH TENGAH').addTo(mymap);
-        }
-        else if (document.getElementById("fly2dd").value == 7){
-            mymap.flyTo([-1.2528581084339656, 116.86094954763317], 12);
-            showCluster('BALIKPAPAN').addTo(mymap);
-        }
-        else if (document.getElementById("fly2dd").value == 8){
-            mymap.flyTo([-8.65366773275109, 115.22049070066736], 12);
-            showCluster('DENPASAR').addTo(mymap);
+		</style>
+    </head>
+    <body id="page-top">
+        <!-- Navigation-->
+        <nav class="navbar navbar-expand-lg navbar-dark fixed-top" id="mainNav">
+            <div class="container">
+                <a class="navbar-brand" href="#page-top"><img src="assets/img/strada.png" alt="..." /></a>
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation">
+                    Menu
+                    <i class="fas fa-bars ms-1"></i>
+                </button>
+                <div class="collapse navbar-collapse" id="navbarResponsive">
+                    <ul class="navbar-nav text-uppercase ms-auto py-4 py-lg-0">
+                        <li class="nav-item"><a class="nav-link" href="#basic">Basic Concept</a></li>
+						<li class="nav-item"><a class="nav-link" href="map.php">Map</a></li>
+                        <li class="nav-item"><a class="nav-link" href="#team">Vulnerability Groups</a></li>
+                        <li class="nav-item"><a class="nav-link" href="#contact">Methodology</a></li>
+                    </ul>
+                </div>
+            </div>
+        </nav>
+        <!-- Masthead-->
+        <header class="masthead">
+            <div class="container">
+<table class="two-column">
+  <tr>
+    <td>
+<div class="masthead-heading">What is Strada?</div>
+<div class="masthead-subheading">Strada is a platform for Climate Change Vulnerability Profiles and Local Adaptation Strategies in Indonesia. This platform is useful for anyone who wants to find adaptation strategies at the village (local) level based on the national climate change vulnerability profile at the village level. </div>
+				
+                <a class="btn btn-primary btn-xl text-uppercase" href="map.php">Open Map!</a>
+        </td>
+    <td><img src="img/strada_map.png" style="width:550px;"></td>
+  </tr>
+</table>
+			
+                
+                
+            </div>
+        </header>
+        <!-- Basic-->
+        <section class="page-section" id="basic">
+            <div class="container">
+                <div class="text-center">
+                    <h2 class="section-heading blue">Basic Concept</h2>
+                </div>
+                <div class="row text-left">
+<table class="two-column">
+  <tr>
+    <td style="vertical-align:top;"><p>
+Vulnerability to climate change and other environmental hazards vary significantly, and are a result of a range of social, economic, historical, and political factors. Vulnerability is a multidimensional concept encompassing climatic and ecological changes, dependence on natural resources, poverty and socioeconomic impacts, and investments in disaster risk management and other measures. </p><p>
+Vulnerability can be defined as the extent to which a community is susceptible to a hazard and its inability to cope with the effects of that hazard. The impacts experienced by communities depend not only their exposure to climate risks, but also on the sensitivity of their livelihoods and cultures to climatic changes, and their capacity to adapt. This three-part definition of vulnerability encompasses a contextualized understanding of localized risks and mitigating conditions that communities face. 
+</p></td>
+    <td><img src='img/basic.png' width='100%'></td>
+  </tr>
+</table>
+                    
+                    
+                </div>
+            </div>
+        </section>
+        <!-- Team-->
+        <section class="page-section bg-light" id="team">
+            <div class="container">
+                <div class="text-center">
+                    <h2 class="section-heading blue">Vulnerability Cluster</h2>
+                    <h3 class="section-subheading text-muted"><b>Indonesia is one of the world’s top greenhouse gas (GHG) emitters and is extremely vulnerable to climate change risks.</b> As a large archipelagic country with extensive low-lying and small island areas, Indonesia has experienced increasing frequency and intensity of climate-induced natural disasters‒such as floods and droughts. Over the past two decades, such hydrometeorological events accounted for over 75 percent of disasters in Indonesia, and 60 percent of the economic damage (Djalante et al. 2021). This trend is expected to accelerate in the coming years (Republic of Indonesia 2021). The government is committed to reducing emissions by 29 percent by 2030 but reaching this goal will require significant policy changes and investments. In the meantime, communities across Indonesia’s diverse ecological system will face an increasing number of intensifying climate risks and they will need to adapt to these changing circumstances.</h3>
+                </div>
+                <div class="row">
+                    <div class="col-lg-4">
+                        <div class="team-member">
+                            <a data-bs-toggle="modal" href="#clustersumatra">
+                            <img class="mx-auto rounded-circle" src="img/sumatra.jpg" alt="..." />
+                            <h4>Sumatra</h4>
+                            <p class="text-muted">Cluster Sumatra</p>
+                            </a>
+                        </div>
+                    </div>
+                    <div class="col-lg-4">
+                        <div class="team-member">
+                            <a data-bs-toggle="modal" href="#clusterjava">
+                            <img class="mx-auto rounded-circle" src="img/java.jpg" alt="..." />
+                            <h4>Java</h4>
+                            <p class="text-muted">Cluster Java</p>
+                            </a>
+                        </div>
+                    </div>
+                    <div class="col-lg-4">
+                        <div class="team-member">
+                            <a data-bs-toggle="modal" href="#clusterbalint">
+                            <img class="mx-auto rounded-circle" src="img/balint.jpg" alt="..." />
+                            <h4>Bali/Nusa Tenggara</h4>
+                            <p class="text-muted">Cluster Bali/NT</p>
+                            </a>
+                        </div>
+                    </div>
+                    <div class="col-lg-4">
+                        <div class="team-member">
+                            <a data-bs-toggle="modal" href="#clusterkalimantan">
+                            <img class="mx-auto rounded-circle" src="img/kalimantan.jpg" alt="..." />
+                            <h4>Kalimantan</h4>
+                            <p class="text-muted">Cluster Kalimantan</p>
+                            </a>
+                        </div>
+                    </div>
+                    <div class="col-lg-4">
+                        <div class="team-member">
+                            <a data-bs-toggle="modal" href="#clustersulawesi">
+                            <img class="mx-auto rounded-circle" src="img/sulawesi.jpg" alt="..." />
+                            <h4>Sulawesi</h4>
+                            <p class="text-muted">Cluster Sulawesi</p>
+                            </a>
+                        </div>
+                    </div>
+                    <div class="col-lg-4">
+                        <div class="team-member">
+                            <a data-bs-toggle="modal" href="#clusterpapuamaluku">
+                            <img class="mx-auto rounded-circle" src="img/papuamaluku.jpg" alt="..." />
+                            <h4>Papua/Maluku</h4>
+                            <p class="text-muted">ClusterPapua/Maluku</p>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-lg-8 mx-auto"><p class="large">Villages with similar vulnerability profiles are grouped together into clusters to make the maps simple and easy to use, while retaining key differentiators. We performed separate cluster analyses within six subregions since differences within these subregions are of more interest than the similarities across them. A total of 61 clusters were identified across six major subregions of Indonesia‒namely Sumatra, Java, Kalimantan, Bali/West Nusa Tenggara (Nusa Tenggara Barat: NTB)/East Nusa Tenggara (Nusa Tenggara Timur: NTT), Sulawesi, and Maluku/Papua.5 Within these six subregions, villages with similar climate change vulnerabilities share similar topographic, ecological, infrastructural, and livelihood qualities. We selected the appropriate number of vulnerability clusters within each subregion using elbow plots, silhouette plots, and dendrograms shown in Figure 1, and through the application of domain knowledge</p></div>
+                </div>
+            </div>
+        </section>
+        <!-- Clients-->
+        <div class="py-5">
+            <div class="container">
+                <div class="row align-items-center">
+                        <a href="https://www.worldbank.org"><img class="img-fluid img-brand d-block mx-auto" src="img/supporter.png" alt="..." aria-label="GFDRR" /></a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Footer-->
+        <footer class="footer py-4">
+            <div class="container">
+                <div class="row align-items-center">
+                    <div class="col-lg-4 text-lg-start">Copyright &copy; Global Facility for Disaster Reduction & Recovery 2023</div>
+                    <div class="col-lg-4 my-3 my-lg-0">
+                        <a class="btn btn-dark btn-social mx-2" href="#!" aria-label="Twitter"><i class="fab fa-twitter"></i></a>
+                        <a class="btn btn-dark btn-social mx-2" href="#!" aria-label="Facebook"><i class="fab fa-facebook-f"></i></a>
+                        <a class="btn btn-dark btn-social mx-2" href="#!" aria-label="LinkedIn"><i class="fab fa-linkedin-in"></i></a>
+                    </div>
+                    <div class="col-lg-4 text-lg-end">
+                        <a class="link-dark text-decoration-none me-3" href="#!">Privacy Policy</a>
+                        <a class="link-dark text-decoration-none" href="#!">Terms of Use</a>
+                    </div>
+                </div>
+            </div>
+        </footer>
+        <!-- Portfolio Modals-->
+        <!-- Cluster Sumatra popup-->
+        <div class="portfolio-modal modal fade" id="clustersumatra" tabindex="-1" role="dialog" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="close-modal" data-bs-dismiss="modal"><img src="assets/img/close-icon.svg" alt="Close modal" /></div>
+                    <div class="container">
+                        <div class="row justify-content-center">
+                            <div class="col-lg-9">
+                                <div class="modal-body">
+                                    <!-- Project details-->
+                                    <h2>Cluster Sumatra</h2>
+                                    <img src='img/sumatra.png' width='100%'>
+                                    <!--<p class="item-intro text-muted">Lorem ipsum dolor sit amet consectetur.</p>-->
+        <?php
+        
+        foreach ($clusterSumatra as $cluster) {
+            echo "<h3>" . $cluster['cluster'] . "</h3>";
+            echo "<p>" . $cluster['desc1'] . "</p>";
+            echo "<p>" . $cluster['desc2'] . "</p>";
         }
         
-    }
-    
-    function onLocationFound(e) {
-        var radius = e.accuracy / 2;
-        L.marker(e.latlng).addTo(mymap)
-            .bindPopup("Posisimu sekitar " + radius.toFixed(2) + " meter dari titik ini.").openPopup();
-    }
-    
-    mymap.on('locationfound', onLocationFound);
-    
-    function onLocationError(e) {
-        alert(e.message);
-    }
-    mymap.on('locationerror', onLocationError);
-    
-    
-</script>
+        ?>
+                                    <button class="btn btn-primary btn-xl" data-bs-dismiss="modal" type="button">
+                                        <i class="fas fa-xmark me-1"></i>
+                                        Close
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Cluster Java popup-->
+        <div class="portfolio-modal modal fade" id="clusterjava" tabindex="-1" role="dialog" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="close-modal" data-bs-dismiss="modal"><img src="assets/img/close-icon.svg" alt="Close modal" /></div>
+                    <div class="container">
+                        <div class="row justify-content-center">
+                            <div class="col-lg-9">
+                                <div class="modal-body">
+                                    <!-- Project details-->
+                                    <h2>Cluster Java</h2>
+                                    <img src='img/java.png' width='100%'>
+                                    <!--<p class="item-intro text-muted">Lorem ipsum dolor sit amet consectetur.</p>-->
+        <?php
+        
+        foreach ($clusterJava as $cluster) {
+            echo "<h3>" . $cluster['cluster'] . "</h3>";
+            echo "<p>" . $cluster['desc1'] . "</p>";
+            echo "<p>" . $cluster['desc2'] . "</p>";
+        }
+        
+        ?>
+                                    <button class="btn btn-primary btn-xl" data-bs-dismiss="modal" type="button">
+                                        <i class="fas fa-xmark me-1"></i>
+                                        Close
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Cluster Bali NT popup-->
+        <div class="portfolio-modal modal fade" id="clusterbalint" tabindex="-1" role="dialog" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="close-modal" data-bs-dismiss="modal"><img src="assets/img/close-icon.svg" alt="Close modal" /></div>
+                    <div class="container">
+                        <div class="row justify-content-center">
+                            <div class="col-lg-9">
+                                <div class="modal-body">
+                                    <!-- Project details-->
+                                    <h2>Cluster Bali/Nusa Tenggara</h2>
+                                    <img src='img/balint.png' width='100%'>
+                                    <!--<p class="item-intro text-muted">Lorem ipsum dolor sit amet consectetur.</p>-->
+        <?php
+        
+        foreach ($clusterBaliNT as $cluster) {
+            echo "<h3>" . $cluster['cluster'] . "</h3>";
+            echo "<p>" . $cluster['desc1'] . "</p>";
+            echo "<p>" . $cluster['desc2'] . "</p>";
+        }
+        
+        ?>
+                                    <button class="btn btn-primary btn-xl" data-bs-dismiss="modal" type="button">
+                                        <i class="fas fa-xmark me-1"></i>
+                                        Close
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Cluster Kalimantan popup-->
+        <div class="portfolio-modal modal fade" id="clusterkalimantan" tabindex="-1" role="dialog" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="close-modal" data-bs-dismiss="modal"><img src="assets/img/close-icon.svg" alt="Close modal" /></div>
+                    <div class="container">
+                        <div class="row justify-content-center">
+                            <div class="col-lg-9">
+                                <div class="modal-body">
+                                    <!-- Project details-->
+                                    <h2>Cluster Kalimantan</h2>
+                                    <img src='img/kalimantan.png' width='100%'>
+                                    <!--<p class="item-intro text-muted">Lorem ipsum dolor sit amet consectetur.</p>-->
+        <?php
+        
+        foreach ($clusterKalimantan as $cluster) {
+            echo "<h3>" . $cluster['cluster'] . "</h3>";
+            echo "<p>" . $cluster['desc1'] . "</p>";
+            echo "<p>" . $cluster['desc2'] . "</p>";
+        }
+        
+        ?>
+                                    <button class="btn btn-primary btn-xl" data-bs-dismiss="modal" type="button">
+                                        <i class="fas fa-xmark me-1"></i>
+                                        Close
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Cluster Sulawesi popup-->
+        <div class="portfolio-modal modal fade" id="clustersulawesi" tabindex="-1" role="dialog" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="close-modal" data-bs-dismiss="modal"><img src="assets/img/close-icon.svg" alt="Close modal" /></div>
+                    <div class="container">
+                        <div class="row justify-content-center">
+                            <div class="col-lg-9">
+                                <div class="modal-body">
+                                    <!-- Project details-->
+                                    <h2>Cluster Sulawesi</h2>
+                                    <img src='img/sulawesi.png' width='100%'>
+                                    <!--<p class="item-intro text-muted">Lorem ipsum dolor sit amet consectetur.</p>-->
+        <?php
+        
+        foreach ($clusterSulawesi as $cluster) {
+            echo "<h3>" . $cluster['cluster'] . "</h3>";
+            echo "<p>" . $cluster['desc1'] . "</p>";
+            echo "<p>" . $cluster['desc2'] . "</p>";
+        }
+        
+        ?>
+                                    <button class="btn btn-primary btn-xl" data-bs-dismiss="modal" type="button">
+                                        <i class="fas fa-xmark me-1"></i>
+                                        Close
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Cluster Papua Maluku popup-->
+        <div class="portfolio-modal modal fade" id="clusterpapuamaluku" tabindex="-1" role="dialog" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="close-modal" data-bs-dismiss="modal"><img src="assets/img/close-icon.svg" alt="Close modal" /></div>
+                    <div class="container">
+                        <div class="row justify-content-center">
+                            <div class="col-lg-9">
+                                <div class="modal-body">
+                                    <!-- Project details-->
+                                    <h2>Cluster Papua/Maluku</h2>
+                                    <img src='img/papuamaluku.png' width='100%'>
+                                    <!--<p class="item-intro text-muted">Lorem ipsum dolor sit amet consectetur.</p>-->
+        <?php
+        
+        foreach ($clusterPapuaMaluku as $cluster) {
+            echo "<h3>" . $cluster['cluster'] . "</h3>";
+            echo "<p>" . $cluster['desc1'] . "</p>";
+            echo "<p>" . $cluster['desc2'] . "</p>";
+        }
+        
+        ?>
+                                    <button class="btn btn-primary btn-xl" data-bs-dismiss="modal" type="button">
+                                        <i class="fas fa-xmark me-1"></i>
+                                        Close
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
 
-
-<p></p>
-</body>
+        <!-- Bootstrap core JS-->
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>
+        <!-- Core theme JS-->
+        <script src="js/scripts.js"></script>
+        <!-- * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *-->
+        <!-- * *                               SB Forms JS                               * *-->
+        <!-- * * Activate your form at https://startbootstrap.com/solution/contact-forms * *-->
+        <!-- * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *-->
+        <script src="https://cdn.startbootstrap.com/sb-forms-latest.js"></script>
+    </body>
 </html>

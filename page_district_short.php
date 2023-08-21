@@ -156,9 +156,9 @@
 
 // MySQL database credentials
 $host = "localhost";
-$username = "";
-$password = "";
-$dbname = "";
+$username = "geoocoi_strada";
+$password = "db5tr4d4!";
+$dbname = "geoocoi_strada";
 
 // Create a connection to the MySQL database
 $conn = mysqli_connect($host, $username, $password, $dbname);
